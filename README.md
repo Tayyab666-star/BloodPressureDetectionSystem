@@ -31,7 +31,7 @@ Installation
    ```
    streamlit run app.py
    ```
-2. Open your browser and go to [http://localhost:8501/](http://localhost:8501/)
+2. Open your browser and go to (https://bloodpressuredetectionsystem.streamlit.app/)
 3. Allow webcam access and follow the instructions in the app.
 
 ## Disclaimer
