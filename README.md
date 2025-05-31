@@ -1,25 +1,23 @@
 # BloodPressureDetectionSystem
 
 
-# Blood Pressure Detection System
-
 A Streamlit application that estimates blood pressure using computer vision and collects health information through a questionnaire.
 
-## Features
+Features
 
 - Webcam-based blood pressure estimation
 - Health questionnaire
 - Personalized health tips
 - User-friendly interface
 
-## Requirements
+Requirements
 
 - Python 3.x
 - OpenCV
 - Streamlit
 - NumPy
 
-## Installation
+Installation
 
 1. Clone the repository
 2. Install dependencies:
@@ -27,7 +25,7 @@ A Streamlit application that estimates blood pressure using computer vision and 
    pip install -r requirements.txt
    ```
 
-## Usage
+ Usage
 
 1. Run the Streamlit app:
    ```
