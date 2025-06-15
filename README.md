@@ -28,7 +28,7 @@ A Streamlit application that estimates blood pressure using computer vision and 
 
 1. Run the Streamlit app:
    ```
-   streamlit run app.py
+   https://bloodpressuredetectionsystem.streamlit.app/
    ```
 2. Open your browser and go to [http://localhost:8501/](http://localhost:8501/)
 3. Allow webcam access and follow the instructions in the app.
