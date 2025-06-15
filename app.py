@@ -18,6 +18,15 @@ st.markdown(
 
 st.info("This app estimates your blood pressure using your webcam or uploaded image/video and collects information about your diet and previous health history. Please allow webcam access and answer the questions below.")
 
+# --- BP Estimation Function (must be top-level) ---
+def estimate_bp_from_frame(frame):
+    import numpy as np
+    if frame is None:
+        raise ValueError("Frame is null. Please capture a valid frame first.")
+    systolic = np.random.randint(120, 180)
+    diastolic = np.random.randint(70, 110)
+    return systolic, diastolic
+
 # --- Questionnaire Section ---
 st.header("Step 1: Patient Questionnaire")
 with st.form("questionnaire_form"):
@@ -48,59 +57,27 @@ if submitted:
 if 'questionnaire' in st.session_state:
     st.header("Step 2: Capture or Upload Your Face")
 
-    def estimate_bp_from_frame(frame):
-        import numpy as np
-        if frame is None:
-            raise ValueError("Frame is null. Please capture a valid frame first.")
-        systolic = np.random.randint(120, 180)
-        diastolic = np.random.randint(70, 110)
-        return systolic, diastolic
-
     # --- Browser-based webcam capture ---
-   # --- Browser-based webcam capture ---
-st.markdown("#### Capture your image using your webcam")
-camera_image = st.camera_input("Take a picture")
+    st.markdown("#### Capture your image using your webcam")
+    camera_image = st.camera_input("Take a picture")
 
-if camera_image is not None:
-    import numpy as np
-    import cv2
-    file_bytes = np.asarray(bytearray(camera_image.getvalue()), dtype=np.uint8)
-    frame = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
-    st.image(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB), channels="RGB", caption="Captured Image")
-    systolic, diastolic = estimate_bp_from_frame(frame)
-    st.success(f"Estimated Blood Pressure: {systolic}/{diastolic} mmHg")
-    st.session_state['bp_result'] = (systolic, diastolic)
-
-# --- Upload image or short video ---
-st.markdown("#### Or upload an image/short video (4-5 seconds)")
-uploaded_file = st.file_uploader("Upload an image or short video", type=["jpg", "jpeg", "png", "mp4", "avi"])
-if uploaded_file is not None:
-    with st.spinner("Processing uploaded file..."):
+    if camera_image is not None:
         import numpy as np
         import cv2
-        import tempfile
-        file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
-        frame = None
-        if uploaded_file.type.startswith("image/"):
-            frame = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
-        elif uploaded_file.type.startswith("video/"):
-            with tempfile.NamedTemporaryFile(delete=False, suffix='.mp4') as tfile:
-                tfile.write(file_bytes)
-                tfile.flush()
-                video = cv2.VideoCapture(tfile.name)
-                ret, frame = video.read()
-                video.release()
-        if frame is not None:
-            st.image(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB), channels="RGB", caption="First Frame from Upload")
-            systolic, diastolic = estimate_bp_from_frame(frame)
-            st.success(f"Estimated Blood Pressure: {systolic}/{diastolic} mmHg")
-            st.session_state['bp_result'] = (systolic, diastolic)
-        else:
-            st.error("Could not process the uploaded file. Please try another file.")
+        file_bytes = np.asarray(bytearray(camera_image.getvalue()), dtype=np.uint8)
+        frame = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+        st.image(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB), channels="RGB", caption="Captured Image")
+        systolic, diastolic = estimate_bp_from_frame(frame)
+        st.success(f"Estimated Blood Pressure: {systolic}/{diastolic} mmHg")
+        st.session_state['bp_result'] = (systolic, diastolic)
 
     # --- Upload image or short video ---
     st.markdown("#### Or upload an image/short video (4-5 seconds)")
-    uploaded_file = st.file_uploader("Upload an image or short video", type=["jpg", "jpeg", "png", "mp4", "avi"])
+    uploaded_file = st.file_uploader(
+        "Upload an image or short video", 
+        type=["jpg", "jpeg", "png", "mp4", "avi"],
+        key="main_file_uploader"
+    )
     if uploaded_file is not None:
         with st.spinner("Processing uploaded file..."):
             import numpy as np
