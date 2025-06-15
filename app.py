@@ -51,10 +51,11 @@ if submitted:
         "alcohol": alcohol,
         "prev_conditions": prev_conditions
     }
-    st.success("Thank you for submitting your information! Please proceed to the next step.")
+    st.success("✅ Questionnaire saved! Thank you for submitting your information. Please proceed to the next step.")
 
-# --- Only show BP detection if questionnaire is submitted ---
+# Show a badge if questionnaire is already saved
 if 'questionnaire' in st.session_state:
+    st.info("✅ Questionnaire has been saved. You can now continue to the next step.")
     st.header("Step 2: Capture or Upload Your Face")
 
     # --- Browser-based webcam capture ---
