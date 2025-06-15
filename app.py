@@ -10,8 +10,9 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+# Centered title
 st.markdown(
-    "<h1 style='text-align: center;'>🧠 BP FuelAI</h1>",
+    "<h1 style='text-align: center;'>🧠 BP Fuel AI:</h1>",
     unsafe_allow_html=True
 )
 
@@ -55,22 +56,19 @@ if 'questionnaire' in st.session_state:
         diastolic = np.random.randint(70, 110)
         return systolic, diastolic
 
-    # Webcam capture
-    if st.button("📸 Capture from Webcam"):
-        with st.spinner("Accessing webcam and capturing image..."):
-            import cv2
-            import time
-            cap = cv2.VideoCapture(0)
-            time.sleep(1)
-            ret, frame = cap.read()
-            cap.release()
-            if ret:
-                st.image(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB), channels="RGB", caption="Captured Image")
-                systolic, diastolic = estimate_bp_from_frame(frame)
-                st.success(f"Estimated Blood Pressure: {systolic}/{diastolic} mmHg")
-                st.session_state['bp_result'] = (systolic, diastolic)
-            else:
-                st.error("Could not access webcam. Please try again.")
+    # --- Browser-based webcam capture ---
+    st.markdown("#### Capture your image using your webcam")
+    camera_image = st.camera_input("Take a picture")
+
+    if camera_image is not None:
+        import numpy as np
+        import cv2
+        file_bytes = np.asarray(bytearray(camera_image.getvalue()), dtype=np.uint8)
+        frame = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+        st.image(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB), channels="RGB", caption="Captured Image")
+        systolic, diastolic = estimate_bp_from_frame(frame)
+        st.success(f"Estimated Blood Pressure: {systolic}/{diastolic} mmHg")
+        st.session_state['bp_result'] = (systolic, diastolic)
 
     # --- Upload image or short video ---
     st.markdown("#### Or upload an image/short video (4-5 seconds)")
