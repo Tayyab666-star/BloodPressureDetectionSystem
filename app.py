@@ -12,7 +12,7 @@ st.markdown("""
 
 # Centered title
 st.markdown(
-    "<h1 style='text-align: center;'>🧠 BP Fuel AI:</h1>",
+    "<h1 style='text-align: center;'>🧠 BP Fuel AI</h1>",
     unsafe_allow_html=True
 )
 
