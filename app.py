@@ -57,18 +57,46 @@ if 'questionnaire' in st.session_state:
         return systolic, diastolic
 
     # --- Browser-based webcam capture ---
-    st.markdown("#### Capture your image using your webcam")
-    camera_image = st.camera_input("Take a picture")
+   # --- Browser-based webcam capture ---
+st.markdown("#### Capture your image using your webcam")
+camera_image = st.camera_input("Take a picture")
 
-    if camera_image is not None:
+if camera_image is not None:
+    import numpy as np
+    import cv2
+    file_bytes = np.asarray(bytearray(camera_image.getvalue()), dtype=np.uint8)
+    frame = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+    st.image(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB), channels="RGB", caption="Captured Image")
+    systolic, diastolic = estimate_bp_from_frame(frame)
+    st.success(f"Estimated Blood Pressure: {systolic}/{diastolic} mmHg")
+    st.session_state['bp_result'] = (systolic, diastolic)
+
+# --- Upload image or short video ---
+st.markdown("#### Or upload an image/short video (4-5 seconds)")
+uploaded_file = st.file_uploader("Upload an image or short video", type=["jpg", "jpeg", "png", "mp4", "avi"])
+if uploaded_file is not None:
+    with st.spinner("Processing uploaded file..."):
         import numpy as np
         import cv2
-        file_bytes = np.asarray(bytearray(camera_image.getvalue()), dtype=np.uint8)
-        frame = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
-        st.image(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB), channels="RGB", caption="Captured Image")
-        systolic, diastolic = estimate_bp_from_frame(frame)
-        st.success(f"Estimated Blood Pressure: {systolic}/{diastolic} mmHg")
-        st.session_state['bp_result'] = (systolic, diastolic)
+        import tempfile
+        file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
+        frame = None
+        if uploaded_file.type.startswith("image/"):
+            frame = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+        elif uploaded_file.type.startswith("video/"):
+            with tempfile.NamedTemporaryFile(delete=False, suffix='.mp4') as tfile:
+                tfile.write(file_bytes)
+                tfile.flush()
+                video = cv2.VideoCapture(tfile.name)
+                ret, frame = video.read()
+                video.release()
+        if frame is not None:
+            st.image(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB), channels="RGB", caption="First Frame from Upload")
+            systolic, diastolic = estimate_bp_from_frame(frame)
+            st.success(f"Estimated Blood Pressure: {systolic}/{diastolic} mmHg")
+            st.session_state['bp_result'] = (systolic, diastolic)
+        else:
+            st.error("Could not process the uploaded file. Please try another file.")
 
     # --- Upload image or short video ---
     st.markdown("#### Or upload an image/short video (4-5 seconds)")
