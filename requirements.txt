@@ -1,3 +1,8 @@
 streamlit
-opencv-python
 numpy
+pandas
+scikit-learn
+matplotlib
+seaborn
+opencv-python
+joblib
