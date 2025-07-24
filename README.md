@@ -33,8 +33,8 @@ Before you start, ensure you have Python (3.8+) installed.
 
 1.  **Clone the Repository:**
     ```bash
-    git clone [https://github.com/YourUsername/YourRepoName.git](https://github.com/YourUsername/YourRepoName.git)
-    cd YourRepoName
+    git clone [https://github.com/Tayyab666-star/BloodPressureDetectionSystem.git)
+    cd BloodPressureDetectionSystem.git
     ```
     (Replace `YourUsername/YourRepoName` with your actual GitHub username and repository name.)
 
